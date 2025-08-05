@@ -1,0 +1,89 @@
+name: 🐛 Bug Report
+description: Report a bug or issue with crush-flake
+title: "[Bug]: "
+labels: ["bug", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below with as much detail as possible.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Pre-flight checklist
+      description: Please verify these items before submitting your bug report
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported yet
+          required: true
+        - label: I have tested this with the latest version of the flake
+          required: true
+        - label: This is a bug with the flake packaging, not the upstream Crush application
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe what happened and what you expected to happen instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Run command '...'
+        2. See error '...'
+        3. Expected '...' but got '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Information about your system and environment
+      value: |
+        - OS: 
+        - Nix version: 
+        - Architecture: 
+        - Flake revision/commit: 
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Relevant error messages, logs, or command output
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or information about the problem
+    validations:
+      required: false
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (completely broken, security issue)
+        - High (major functionality broken)
+        - Medium (some functionality impacted)
+        - Low (minor issue, workaround available)
+    validations:
+      required: true

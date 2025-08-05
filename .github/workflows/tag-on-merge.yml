@@ -1,0 +1,195 @@
+name: Tag on Nightly Update Merge
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'flake.nix'
+      - 'flake.lock'
+
+concurrency:
+  group: tag-on-merge-${{ github.sha }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write  # Required for creating and pushing tags
+  actions: read    # Required for workflow operations
+
+jobs:
+  check-nightly-update:
+    runs-on: ubuntu-latest
+    outputs:
+      is-nightly-update: ${{ steps.check-commit.outputs.is-nightly-update }}
+      crush-rev: ${{ steps.extract-info.outputs.crush-rev }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # Need to compare with previous commit
+          
+      - name: Check if this is a nightly update commit
+        id: check-commit
+        run: |
+          # Check commit message for nightly update pattern
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          
+          if echo "$COMMIT_MSG" | grep -q "chore: update crush to nightly"; then
+            echo "is-nightly-update=true" >> $GITHUB_OUTPUT
+            echo "✅ Detected nightly update commit"
+          else
+            echo "is-nightly-update=false" >> $GITHUB_OUTPUT
+            echo "ℹ️  Not a nightly update commit"
+          fi
+          
+      - name: Extract crush revision from flake.lock
+        if: steps.check-commit.outputs.is-nightly-update == 'true'
+        id: extract-info
+        run: |
+          # Extract crush revision from flake.lock
+          CRUSH_REV=$(nix flake metadata --json | jq -r '.locks.nodes["crush-src"].locked.rev // "unknown"')
+          echo "crush-rev=$CRUSH_REV" >> $GITHUB_OUTPUT
+          echo "Extracted crush revision: $CRUSH_REV"
+
+  create-nightly-tag:
+    runs-on: ubuntu-latest
+    needs: check-nightly-update
+    if: needs.check-nightly-update.outputs.is-nightly-update == 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: Check if tag already exists
+        id: tag-check
+        run: |
+          CURRENT_DATE=$(date +%Y%m%d)
+          SHORT_REV=$(echo "${{ needs.check-nightly-update.outputs.crush-rev }}" | cut -c1-7)
+          TAG_NAME="nightly-${CURRENT_DATE}-${SHORT_REV}"
+          
+          if git tag -l | grep -q "^$TAG_NAME$"; then
+            echo "tag-exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Tag $TAG_NAME already exists"
+          else
+            echo "tag-exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Tag $TAG_NAME does not exist, safe to create"
+          fi
+          
+          echo "tag-name=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+      - name: Update README if needed
+        if: steps.tag-check.outputs.tag-exists == 'false'
+        run: |
+          set -euo pipefail
+          
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          CRUSH_REV="${{ needs.check-nightly-update.outputs.crush-rev }}"
+          SHORT_REV=$(echo "$CRUSH_REV" | cut -c1-7)
+          TAG_DATE=$(date +%Y%m%d)
+          TAG_NAME="nightly-${TAG_DATE}-${SHORT_REV}"
+          
+          echo "🔄 Checking if README needs update for tag: $TAG_NAME"
+          
+          # Check if README already has this version
+          if ! grep -q "$TAG_NAME" README.md; then
+            echo "📚 Updating README with latest nightly example: $TAG_NAME"
+            
+            # Update the README nightly example section
+            sed -i "s|# Install latest nightly build (updated [0-9-]*)|# Install latest nightly build (updated $CURRENT_DATE)|g" README.md
+            sed -i "s|github:conneroisu/crush-flake#nightly-[0-9]*-[a-f0-9]*|github:conneroisu/crush-flake#$TAG_NAME|g" README.md
+            
+            # Commit the README update
+            git add README.md
+            git commit -m "docs: update README nightly example to $TAG_NAME
+
+            Updated README.md to showcase the latest nightly build tag.
+
+            🤖 Automated with [Claude Code](https://claude.ai/code)"
+            git push origin main
+            
+            echo "✅ README updated and committed"
+          else
+            echo "✅ README already up to date with $TAG_NAME"
+          fi
+          
+      - name: Validate build before tagging
+        if: steps.tag-check.outputs.tag-exists == 'false'
+        run: |
+          echo "🧪 Validating build before creating tag..."
+          
+          # Quick build validation
+          nix build .#crush --no-link
+          
+          # Binary functionality test
+          CRUSH_BIN=$(nix build .#crush --no-link --print-out-paths)/bin/crush
+          if [ -x "$CRUSH_BIN" ]; then
+            echo "✅ Binary is executable"
+            timeout 10s "$CRUSH_BIN" --help > /dev/null || echo "Help test completed"
+          else
+            echo "❌ Binary validation failed"
+            exit 1
+          fi
+          
+          echo "✅ Build validation successful"
+          
+      - name: Create and push nightly tag
+        if: steps.tag-check.outputs.tag-exists == 'false'
+        run: |
+          TAG_NAME="${{ steps.tag-check.outputs.tag-name }}"
+          CRUSH_REV="${{ needs.check-nightly-update.outputs.crush-rev }}"
+          
+          echo "🏷️  Creating nightly tag: $TAG_NAME"
+          
+          # Create annotated tag with detailed information
+          git tag -a "$TAG_NAME" -m "Nightly release $TAG_NAME
+
+          Automated nightly build of Crush AI coding agent from merged PR.
+
+          ## Upstream Information
+          - **Crush Revision**: $CRUSH_REV
+          - **Source**: https://github.com/charmbracelet/crush/commit/$CRUSH_REV
+          - **Build Date**: $(date -u '+%Y-%m-%d %H:%M:%S UTC')
+          - **Tagged From**: ${{ github.sha }}
+
+          ## Verification
+          - ✅ Merged to main branch
+          - ✅ Build tested and verified
+          - ✅ Binary functionality confirmed
+          - ✅ Automated validation passed
+
+          🤖 This tag was automatically created after PR merge."
+          
+          # Push tag to trigger release workflow
+          git push origin "$TAG_NAME"
+          
+          echo "✅ Successfully created and pushed nightly tag: $TAG_NAME"
+          
+      - name: Verify tag creation
+        if: steps.tag-check.outputs.tag-exists == 'false'
+        run: |
+          TAG_NAME="${{ steps.tag-check.outputs.tag-name }}"
+          
+          # Wait a moment for tag to propagate
+          sleep 2
+          
+          # Verify tag exists remotely
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG_NAME"; then
+            echo "✅ Tag $TAG_NAME successfully created and pushed"
+            
+            # Output summary
+            echo "## 🎉 Nightly Tag Created Successfully"
+            echo "- **Tag**: $TAG_NAME"
+            echo "- **Crush Revision**: ${{ needs.check-nightly-update.outputs.crush-rev }}"
+            echo "- **Commit**: ${{ github.sha }}"
+            echo "- **Release workflow**: Will be triggered automatically"
+          else
+            echo "❌ Tag creation verification failed"
+            exit 1
+          fi

@@ -508,7 +508,7 @@ https://github.com/charmbracelet/crush/releases/tag/nightly
               echo "   New tag: $TAG_NAME"
               echo "   New date: $CURRENT_DATE"
               rm README.md.backup
-              
+
               echo ""
               echo "📝 Changes made:"
               echo "   - Updated nightly build date to $CURRENT_DATE"

@@ -114,7 +114,18 @@ test_formatter() {
 test_scripts() {
     # Test development scripts
     nix develop --command check-version
-    nix develop --command check-updates
+    
+    # check-updates exits with code 2 if updates are available, which is normal
+    nix develop --command check-updates || {
+        local exit_code=$?
+        if [[ $exit_code -eq 2 ]]; then
+            # Exit code 2 means updates are available, which is expected
+            return 0
+        else
+            # Any other exit code is an actual error
+            return $exit_code
+        fi
+    }
 }
 
 test_metadata() {

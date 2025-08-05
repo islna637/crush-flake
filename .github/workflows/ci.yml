@@ -22,7 +22,7 @@ jobs:
           
       - name: Check formatting
         run: |
-          nix fmt -- --check
+          nix fmt -- --fail-on-change
           
   flake-check:
     runs-on: ubuntu-latest

@@ -135,7 +135,7 @@ https://github.com/charmbracelet/crush/releases/tag/nightly
                 echo "✅ Found correct vendor hash: $CORRECT_HASH"
 
                 # Update the flake.nix file with the correct hash
-                sed -i "s|vendorHash = pkgs\.lib\.fakeHash;|vendorHash = \"$CORRECT_HASH\";|" "$REPO_ROOT/flake.nix"
+                sed -i "s|vendorHash = \"sha256-[A-Za-z0-9+/=]*\";|vendorHash = \"$CORRECT_HASH\";|" "$REPO_ROOT/flake.nix"
 
                 echo "📝 Updated flake.nix with correct vendor hash"
 
@@ -147,7 +147,7 @@ https://github.com/charmbracelet/crush/releases/tag/nightly
                   # Show version info
                   echo ""
                   echo "📋 Update Summary:"
-                  nix develop --command check-version
+                  echo "✅ Update completed successfully!"
                 else
                   echo "❌ Build failed even with correct hash"
                   exit 1

@@ -3,11 +3,11 @@
     "crush-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1754446856,
-        "narHash": "sha256-1tSzhRApmt1JBhuCfQnzZr2Dw2HioEtlboe9H2RZGAk=",
+        "lastModified": 1754604846,
+        "narHash": "sha256-fOSmJ+HNRLyd9vJ2udWfr/W6wBZBQx6lWpVZAVL0tIY=",
         "owner": "charmbracelet",
         "repo": "crush",
-        "rev": "9ce53b18fc16c23c068669a6cf0ac30eb4cbfcd2",
+        "rev": "a32c16cb8720bc4288cbd81b1999aad232528e77",
         "type": "github"
       },
       "original": {

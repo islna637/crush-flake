@@ -81,7 +81,7 @@ https://github.com/charmbracelet/crush/releases/tag/nightly
         src = crush-src;
 
         # Vendor hash - automatically updated by update script
-        vendorHash = "sha256-/9Nj0wgjiKpUSvXegbXG39GcKj1+UGjO83TjW+sienk=";
+        vendorHash = "sha256-PeorgBPtQsPUEpwReSsZqjIidkjfl4pyTg2iO0qcDAY=";
 
         # Build configuration
         subPackages = ["."];

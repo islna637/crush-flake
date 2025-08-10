@@ -72,7 +72,8 @@ https://github.com/charmbracelet/crush/releases/tag/nightly
       };
 
       # Extract version info from source revision
-      packageVersion = "nightly-${builtins.substring 0 7 (crush-src.rev or "unknown")}";
+      # TODO: Update to latest version using update script
+      packageVersion = "v0.4.0";
 
       # Build the crush package
       crushPackage = pkgs.buildGoModule rec {

